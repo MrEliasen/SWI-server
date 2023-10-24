@@ -1,0 +1,8 @@
+.DS_Store
+logs
+*.db
+*.db-wal
+*.db-shm
+*.log
+*swi-server
+certs
