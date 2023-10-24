@@ -2,7 +2,7 @@
 
 SWI is made as a spiritual successor to the original Street Wars Online 2, from 2000, and was created as a means to learn about GO and protobufs.
 
-[Also see the  SWI Client](https://github.com/MrEliasen/SWI-client) 
+Also see the [SWI Client](https://github.com/MrEliasen/SWI-client) and the [SWI Protobufs](https://github.com/MrEliasen/SWI-proto) 
 
 ## Overview
 
