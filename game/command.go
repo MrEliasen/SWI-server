@@ -64,7 +64,9 @@ func ExecuteCommand(c *Client, msg string) {
 	if cmdToRun != nil {
 		if !cmdToRun.AdminCommand || (cmdToRun.AdminCommand && isAdmin) {
 			if help {
-				cmdToRun.Help(c)
+				if cmdToRun.Help != nil {
+					cmdToRun.Help(c)
+				}
 				return
 			}
 
