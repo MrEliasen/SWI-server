@@ -454,7 +454,7 @@ var CommandsList = map[string]*Command{
 
 			c.Player.Mu.Lock()
 
-			price := uint32((float32(item.GetPrice()) * settings.DrugProfitMargin) * c.Player.Loc.City.DrugDemands[item.TemplateName])
+			price := uint32(float32(item.GetPrice()) * c.Player.Loc.City.DrugDemands[item.TemplateName])
 
 			if price <= 0 {
 				price = 1
