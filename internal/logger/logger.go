@@ -16,6 +16,7 @@ var (
 	startTime       = time.Now()
 	Logger          *pterm.Logger
 	logTransactions *log.Logger
+	logMoney        *log.Logger
 	logCombat       *log.Logger
 	logItems        *log.Logger
 	logChat         *log.Logger
@@ -23,6 +24,10 @@ var (
 
 func LogItems(name string, action string, item string, north int, east int, city string) {
 	logItems.Printf("%s, %s, %s, %s N%d-E%d", name, action, item, city, north, east)
+}
+
+func LogMoney(name string, action string, amount uint32, recipient string) {
+	logMoney.Printf(",%s,%s,%d,%s", name, action, amount, recipient)
 }
 
 func LogBuySell(name string, action string, amount uint32, item string) {
@@ -59,6 +64,12 @@ func New(env *string) {
 		os.Exit(1)
 	}
 
+	money, err := os.OpenFile(logsDirPath+"/money.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0o666)
+	if err != nil {
+		fmt.Println("Error opening money.log:", err)
+		os.Exit(1)
+	}
+
 	combat, err := os.OpenFile(logsDirPath+"/combat.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0o666)
 	if err != nil {
 		fmt.Println("Error opening combat.log:", err)
@@ -78,6 +89,7 @@ func New(env *string) {
 	}
 
 	logTransactions = log.New(transactions, "Transactions ", log.LstdFlags)
+	logMoney = log.New(money, "Money", log.LstdFlags)
 	logCombat = log.New(combat, "Combat", log.LstdFlags)
 	logItems = log.New(items, "Items", log.LstdFlags)
 	logChat = log.New(chat, "Chat", log.LstdFlags)

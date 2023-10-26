@@ -98,6 +98,7 @@ func (n *Entity) Death(killer *Entity) {
 	}
 
 	if n.IsPlayer {
+		amount := n.Cash
 		killer.Cash += n.Cash
 		n.Cash = 50
 		n.Health = 50
@@ -106,6 +107,8 @@ func (n *Entity) Death(killer *Entity) {
 		n.SkillSnoop.Value *= 0.96
 		n.SkillTrack.Value *= 0.96
 		n.SkillSearch.Value *= 0.96
+
+		logger.LogMoney(n.Name, "death", amount, killer.Name)
 	} else {
 		killer.Cash += n.NpcCashReward
 	}
