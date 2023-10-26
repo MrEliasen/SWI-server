@@ -143,18 +143,20 @@ var BuildingCommandsList = map[string]*Command{
 			}
 
 			username := args[0]
-			amount, err := strconv.ParseInt(args[1], 10, 32)
-			if err != nil || amount < 1 {
+			argAmount, err := strconv.ParseInt(args[1], 10, 32)
+			if err != nil || argAmount < 1 {
 				c.SendEvent(&responses.Generic{
 					Messages: []string{"Invalid amount. Try: /transfer <username> <amount>"},
 				})
 				return
 			}
 
+			amount := uint32(argAmount)
+
 			c.Player.Mu.Lock()
 			defer c.Player.Mu.Unlock()
 
-			if amount > int64(c.Player.Bank) {
+			if amount > c.Player.Bank {
 				c.SendEvent(&responses.Generic{
 					Messages: []string{"You don't have that much money in your bank account."},
 				})
@@ -183,8 +185,8 @@ var BuildingCommandsList = map[string]*Command{
 			player.Mu.Lock()
 			defer player.Mu.Unlock()
 
-			c.Player.Bank -= uint32(amount)
-			player.Bank += uint32(amount)
+			c.Player.Bank -= amount
+			player.Bank += amount
 
 			c.SendEvent(&responses.Generic{
 				Messages: []string{fmt.Sprintf("You just transferred $%d to %s", amount, player.Name)},
@@ -215,23 +217,25 @@ var BuildingCommandsList = map[string]*Command{
 				return
 			}
 
-			amount, err := strconv.ParseInt(args[0], 10, 32)
-			if err != nil || amount < 1 {
+			argAmount, err := strconv.ParseInt(args[0], 10, 32)
+			if err != nil || argAmount < 1 {
 				c.SendEvent(&responses.Generic{
 					Messages: []string{"Invalid amount. Try: /deposit help"},
 				})
 				return
 			}
 
-			if c.Player.Cash < uint32(amount) {
+			amount := uint32(argAmount)
+
+			if c.Player.Cash < amount {
 				c.SendEvent(&responses.Generic{
 					Messages: []string{fmt.Sprintf("You do not have %d on you", amount)},
 				})
 				return
 			}
 
-			c.Player.Cash -= uint32(amount)
-			c.Player.Bank += uint32(amount)
+			c.Player.Cash -= amount
+			c.Player.Bank += amount
 
 			c.SendEvent(&responses.Generic{
 				Status:   responses.ResponseStatus_RESPONSE_STATUS_INFO,
@@ -265,23 +269,25 @@ var BuildingCommandsList = map[string]*Command{
 				return
 			}
 
-			amount, err := strconv.ParseInt(args[0], 10, 32)
-			if err != nil || amount < 1 {
+			argAmount, err := strconv.ParseInt(args[0], 10, 32)
+			if err != nil || argAmount < 1 {
 				c.SendEvent(&responses.Generic{
 					Messages: []string{"Invalid amount. Try: /withdraw help"},
 				})
 				return
 			}
 
-			if c.Player.Bank < uint32(amount) {
+			amount := uint32(argAmount)
+
+			if c.Player.Bank < amount {
 				c.SendEvent(&responses.Generic{
 					Messages: []string{fmt.Sprintf("You do not have $%d in the bank", amount)},
 				})
 				return
 			}
 
-			c.Player.Bank -= uint32(amount)
-			c.Player.Cash += uint32(amount)
+			c.Player.Bank -= amount
+			c.Player.Cash += amount
 
 			c.SendEvent(&responses.Generic{
 				Status:   responses.ResponseStatus_RESPONSE_STATUS_INFO,
@@ -336,14 +342,16 @@ var BuildingCommandsList = map[string]*Command{
 				healAmount = settings.PlayerMaxHealth - c.Player.Health
 			}
 
-			if c.Player.Cash < uint32(healAmount*settings.HealCostPerPoint) {
+			healCost := uint32(healAmount * settings.HealCostPerPoint)
+
+			if c.Player.Cash < healCost {
 				c.SendEvent(&responses.Generic{
 					Messages: []string{fmt.Sprintf("You do not have enough money. Costs %d per point to heal", settings.HealCostPerPoint)},
 				})
 				return
 			}
 
-			c.Player.Cash -= uint32(healAmount * settings.HealCostPerPoint)
+			c.Player.Cash -= healCost
 			c.Player.Health += healAmount
 
 			if c.Player.Health > settings.PlayerMaxHealth {
