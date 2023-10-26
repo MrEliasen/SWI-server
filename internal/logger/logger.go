@@ -89,9 +89,9 @@ func Uptime() string {
 
 	runTimeDiff := now.Sub(startTime)
 	days := math.Floor(runTimeDiff.Hours() / 24)
-	hours := math.Floor(runTimeDiff.Hours() - days*24)
-	minutes := math.Floor(runTimeDiff.Minutes() - hours*24)
-	seconds := runTimeDiff.Seconds() - minutes*60
+	hours := math.Floor(runTimeDiff.Hours())
+	minutes := math.Floor(runTimeDiff.Minutes())
+	seconds := runTimeDiff.Seconds()
 
-	return fmt.Sprintf("Uptime: %d days, %d hours, %d minutes, %d seconds.", int64(days), int64(hours), int64(minutes), int64(seconds))
+	return fmt.Sprintf("Uptime: %d days, %d hours, %d minutes, %d seconds.", int64(days), int64(hours)%24, int64(minutes)%60, int64(seconds)%60)
 }
