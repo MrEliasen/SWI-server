@@ -29,7 +29,7 @@ type NpcTemplate struct {
 	NpcType   NPCType
 	Title     string
 	Rep       int32
-	Cash      uint32
+	Cash      int64
 	Gender    Gender
 	Health    int
 	SkillAcc  float32

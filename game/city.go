@@ -16,9 +16,9 @@ type City struct {
 	Grid              map[string]*Location
 	Width             uint
 	Height            uint
-	TravelCostMin     uint32
-	TravelCostMax     uint32
-	TravelCost        uint32
+	TravelCostMin     int64
+	TravelCostMax     int64
+	TravelCost        int64
 	Players           map[*Client]bool
 	PlayerJoin        chan *Client
 	PlayerLeave       chan *Client
@@ -40,7 +40,7 @@ type BuildingLocation struct {
 func (c *City) RandomiseTravelCost() {
 	c.Mu.Lock()
 	res := rand.Intn(int(c.TravelCostMax)) + int(c.TravelCostMin)
-	c.TravelCost = uint32(res)
+	c.TravelCost = int64(res)
 	c.Mu.Unlock()
 }
 

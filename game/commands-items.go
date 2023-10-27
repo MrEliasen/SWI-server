@@ -22,7 +22,7 @@ var UseEffectsList = map[string]*ItemUseEffect{
 			c.Player.Mu.Lock()
 			defer c.Player.Mu.Unlock()
 
-			var useCost uint32 = settings.SmartPhoneCost
+			var useCost int64 = settings.SmartPhoneCost
 
 			if c.Player.Bank < useCost {
 				c.SendEvent(&responses.Generic{

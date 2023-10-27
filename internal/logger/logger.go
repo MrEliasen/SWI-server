@@ -26,11 +26,11 @@ func LogItems(name string, action string, item string, north int, east int, city
 	logItems.Printf("%s, %s, %s, %s N%d-E%d", name, action, item, city, north, east)
 }
 
-func LogMoney(name string, action string, amount uint32, recipient string) {
+func LogMoney(name string, action string, amount int64, recipient string) {
 	logMoney.Printf(",%s,%s,%d,%s", name, action, amount, recipient)
 }
 
-func LogBuySell(name string, action string, amount uint32, item string) {
+func LogBuySell(name string, action string, amount int64, item string) {
 	logTransactions.Printf(",%s,%s,%d,%s", name, action, amount, item)
 }
 

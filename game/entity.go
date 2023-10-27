@@ -19,7 +19,7 @@ type Entity struct {
 	TargetedBy    map[*Entity]bool
 	Inventory     *Inventory
 	Name          string
-	Cash          uint32
+	Cash          int64
 	Health        int
 	Dead          bool
 	SkillAcc      skills.Accuracy
@@ -27,7 +27,7 @@ type Entity struct {
 	LastLocation  Coordinates
 	// Player -----
 	PlayerID          uint64
-	Bank              uint32
+	Bank              int64
 	Gang              *Gang
 	Hometown          string
 	LastMove          int64
@@ -48,7 +48,7 @@ type Entity struct {
 	SkillTrack        skills.Track
 	// NPC -----
 	NpcID         string
-	NpcCashReward uint32
+	NpcCashReward int64
 	NpcGender     Gender
 	NpcType       NPCType
 	NpcTitle      string

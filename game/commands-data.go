@@ -157,7 +157,7 @@ var CommandsList = map[string]*Command{
 				return
 			}
 
-			money := uint32(float32(itemEvent.Item.GetPrice()) * settings.ItemSellPriceLoss)
+			money := int64(float32(itemEvent.Item.GetPrice()) * settings.ItemSellPriceLoss)
 
 			if money == 0 {
 				money = 1
@@ -257,7 +257,7 @@ var CommandsList = map[string]*Command{
 			c.Player.Mu.Lock()
 			defer c.Player.Mu.Unlock()
 
-			if itemTemplate.GetPrice() > c.Player.Cash {
+			if int64(itemTemplate.GetPrice()) > c.Player.Cash {
 				c.SendEvent(&responses.MerchantMessage{
 					Status:  responses.ResponseStatus_RESPONSE_STATUS_ERROR,
 					Message: "You do not have enough money on you, come back when you have cash.",
@@ -282,7 +282,7 @@ var CommandsList = map[string]*Command{
 				return
 			}
 
-			c.Player.Cash -= itemTemplate.GetPrice()
+			c.Player.Cash -= int64(itemTemplate.GetPrice())
 			err = c.Player.Inventory.addItem(newItem)
 			if err != nil {
 				c.SendEvent(&responses.MerchantMessage{
@@ -297,7 +297,7 @@ var CommandsList = map[string]*Command{
 				return
 			}
 
-			logger.LogBuySell(c.Player.Name, "buy", itemTemplate.GetPrice(), itemTemplate.TemplateName)
+			logger.LogBuySell(c.Player.Name, "buy", int64(itemTemplate.GetPrice()), itemTemplate.TemplateName)
 
 			c.SendEvent(&responses.MerchantMessage{
 				Status:  responses.ResponseStatus_RESPONSE_STATUS_SUCCESS,
@@ -377,7 +377,7 @@ var CommandsList = map[string]*Command{
 				return
 			}
 
-			price := uint32((float32(itemEvent.Item.GetPrice()) * settings.DrugProfitMargin) * c.Player.Loc.City.DrugDemands[item.TemplateName])
+			price := int64((float32(itemEvent.Item.GetPrice()) * settings.DrugProfitMargin) * c.Player.Loc.City.DrugDemands[item.TemplateName])
 
 			if price <= 0 {
 				price = 1
@@ -454,7 +454,7 @@ var CommandsList = map[string]*Command{
 
 			c.Player.Mu.Lock()
 
-			price := uint32(float32(item.GetPrice()) * c.Player.Loc.City.DrugDemands[item.TemplateName])
+			price := int64(float32(item.GetPrice()) * c.Player.Loc.City.DrugDemands[item.TemplateName])
 
 			if price <= 0 {
 				price = 1

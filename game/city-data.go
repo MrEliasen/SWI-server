@@ -41,8 +41,8 @@ type CityTemplate struct {
 	ISO               string
 	Width             uint8
 	Height            uint8
-	TravelCostMin     uint32
-	TravelCostMax     uint32
+	TravelCostMin     int64
+	TravelCostMax     int64
 	NpcSpawnList      map[NPCType]uint8
 	BuildingLocations []BuildingLocation
 }

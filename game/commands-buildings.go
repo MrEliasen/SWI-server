@@ -7,6 +7,7 @@ import (
 
 	"github.com/mreliasen/swi-server/game/settings"
 	"github.com/mreliasen/swi-server/internal"
+	"github.com/mreliasen/swi-server/internal/logger"
 	"github.com/mreliasen/swi-server/internal/responses"
 )
 
@@ -87,7 +88,7 @@ var BuildingCommandsList = map[string]*Command{
 			}
 
 			health_cost := int(amount * settings.DrinkHealthCost)
-			drink_cost := uint32(amount * settings.DrinkCost)
+			drink_cost := int64(amount * settings.DrinkCost)
 			rep_gain := int64(amount * settings.DrinkRepGain)
 
 			if c.Player.Cash < drink_cost {
@@ -143,15 +144,13 @@ var BuildingCommandsList = map[string]*Command{
 			}
 
 			username := args[0]
-			argAmount, err := strconv.ParseInt(args[1], 10, 32)
-			if err != nil || argAmount < 1 {
+			amount, err := strconv.ParseInt(args[1], 10, 32)
+			if err != nil || amount < 1 {
 				c.SendEvent(&responses.Generic{
 					Messages: []string{"Invalid amount. Try: /transfer <username> <amount>"},
 				})
 				return
 			}
-
-			amount := uint32(argAmount)
 
 			c.Player.Mu.Lock()
 			defer c.Player.Mu.Unlock()
@@ -195,6 +194,8 @@ var BuildingCommandsList = map[string]*Command{
 			player.Client.SendEvent(&responses.Generic{
 				Messages: []string{fmt.Sprintf("%s just transferred you $%d", c.Player.Name, amount)},
 			})
+
+			logger.LogMoney(c.Player.Name, "transfer", amount, player.Name)
 		},
 	},
 	"/deposit": {
@@ -217,15 +218,13 @@ var BuildingCommandsList = map[string]*Command{
 				return
 			}
 
-			argAmount, err := strconv.ParseInt(args[0], 10, 32)
-			if err != nil || argAmount < 1 {
+			amount, err := strconv.ParseInt(args[0], 10, 32)
+			if err != nil || amount < 1 {
 				c.SendEvent(&responses.Generic{
 					Messages: []string{"Invalid amount. Try: /deposit help"},
 				})
 				return
 			}
-
-			amount := uint32(argAmount)
 
 			if c.Player.Cash < amount {
 				c.SendEvent(&responses.Generic{
@@ -241,6 +240,8 @@ var BuildingCommandsList = map[string]*Command{
 				Status:   responses.ResponseStatus_RESPONSE_STATUS_INFO,
 				Messages: []string{fmt.Sprintf("You deposit $%d in your bank account.", amount)},
 			})
+
+			logger.LogMoney(c.Player.Name, "deposit", amount, "")
 
 			go c.Player.PlayerSendStatsUpdate()
 		},
@@ -277,7 +278,7 @@ var BuildingCommandsList = map[string]*Command{
 				return
 			}
 
-			amount := uint32(argAmount)
+			amount := argAmount
 
 			if c.Player.Bank < amount {
 				c.SendEvent(&responses.Generic{
@@ -293,6 +294,8 @@ var BuildingCommandsList = map[string]*Command{
 				Status:   responses.ResponseStatus_RESPONSE_STATUS_INFO,
 				Messages: []string{fmt.Sprintf("You withdraw $%d from your account.", amount)},
 			})
+
+			logger.LogMoney(c.Player.Name, "withdraw", amount, "")
 
 			go c.Player.PlayerSendStatsUpdate()
 		},
@@ -342,7 +345,7 @@ var BuildingCommandsList = map[string]*Command{
 				healAmount = settings.PlayerMaxHealth - c.Player.Health
 			}
 
-			healCost := uint32(healAmount * settings.HealCostPerPoint)
+			healCost := int64(healAmount * settings.HealCostPerPoint)
 
 			if c.Player.Cash < healCost {
 				c.SendEvent(&responses.Generic{

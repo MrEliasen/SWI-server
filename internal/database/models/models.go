@@ -16,8 +16,8 @@ type Character struct {
 	Health        uint
 	NpcKills      uint
 	PlayerKills   uint
-	Cash          uint32
-	Bank          uint32
+	Cash          int64
+	Bank          int64
 	Hometown      string
 	SkillAcc      float32
 	SkillHide     float32
