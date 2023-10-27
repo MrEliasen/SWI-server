@@ -233,15 +233,16 @@ var BuildingCommandsList = map[string]*Command{
 				return
 			}
 
+			logger.LogMoney(c.Player.Name, "bank-pre-statement", c.Player.Bank, "")
 			c.Player.Cash -= amount
 			c.Player.Bank += amount
+			logger.LogMoney(c.Player.Name, "deposit", amount, "")
+			logger.LogMoney(c.Player.Name, "bank-post-statement", c.Player.Bank, "")
 
 			c.SendEvent(&responses.Generic{
 				Status:   responses.ResponseStatus_RESPONSE_STATUS_INFO,
 				Messages: []string{fmt.Sprintf("You deposit $%d in your bank account.", amount)},
 			})
-
-			logger.LogMoney(c.Player.Name, "deposit", amount, "")
 
 			go c.Player.PlayerSendStatsUpdate()
 		},
@@ -287,6 +288,9 @@ var BuildingCommandsList = map[string]*Command{
 				return
 			}
 
+			logger.LogMoney(c.Player.Name, "bank-pre-statement", c.Player.Bank, "")
+			logger.LogMoney(c.Player.Name, "withdraw", amount, "")
+
 			c.Player.Bank -= amount
 			c.Player.Cash += amount
 
@@ -295,7 +299,7 @@ var BuildingCommandsList = map[string]*Command{
 				Messages: []string{fmt.Sprintf("You withdraw $%d from your account.", amount)},
 			})
 
-			logger.LogMoney(c.Player.Name, "withdraw", amount, "")
+			logger.LogMoney(c.Player.Name, "bank-post-statement", c.Player.Bank, "")
 
 			go c.Player.PlayerSendStatsUpdate()
 		},
