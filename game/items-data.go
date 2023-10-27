@@ -32,7 +32,7 @@ func NewItem(itemId string) (*Item, bool) {
 
 	return &Item{
 		ID:           uuid.New().String(),
-		Amount:       1,
+		Amount:       baseItem.Amount,
 		TemplateName: baseItem.TemplateName,
 		Condition:    1.00,
 	}, true
